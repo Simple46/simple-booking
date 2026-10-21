@@ -1,9 +1,10 @@
 // src/app/(dashboard)/dashboard/registrations/page.tsx
+import { Suspense } from "react";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import { RegistrationsTable } from "@/components/dashboard/registrations-table";
 
-export default async function AllRegistrationsPage() {
+async function RegistrationsContent() {
   const { userId } = await auth();
   if (!userId) return null;
 
@@ -23,5 +24,25 @@ export default async function AllRegistrationsPage() {
       </div>
       <RegistrationsTable registrations={registrations} />
     </div>
+  );
+}
+
+function RegistrationsSkeleton() {
+  return (
+    <div className="animate-pulse space-y-6">
+      <div className="space-y-2 border-b border-border pb-6">
+        <div className="h-8 w-1/3 rounded bg-surface-muted" />
+        <div className="h-4 w-1/2 rounded bg-surface-muted" />
+      </div>
+      <div className="h-64 rounded-2xl bg-surface-muted" />
+    </div>
+  );
+}
+
+export default function AllRegistrationsPage() {
+  return (
+    <Suspense fallback={<RegistrationsSkeleton />}>
+      <RegistrationsContent />
+    </Suspense>
   );
 }

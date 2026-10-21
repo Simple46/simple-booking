@@ -111,7 +111,7 @@ function Skeleton() {
   );
 }
 
-export default async function DashboardPage() {
+async function AuthenticatedDashboardPage() {
   const { userId } = await auth();
   if (!userId) return null;
 
@@ -134,5 +134,13 @@ export default async function DashboardPage() {
         <DashboardContent userId={userId} />
       </Suspense>
     </div>
+  );
+}
+
+export default function DashboardPage() {
+  return (
+    <Suspense fallback={<Skeleton />}>
+      <AuthenticatedDashboardPage />
+    </Suspense>
   );
 }

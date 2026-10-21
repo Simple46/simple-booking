@@ -12,10 +12,6 @@ export default async function ScannerPage({
 }: {
   params: Promise<{ slug: string }>;
 }) {
-  const { slug } = await params;
-  const { userId } = await auth();
-  if (!userId) return null;
-
   return (
     <Suspense
       fallback={
@@ -25,9 +21,21 @@ export default async function ScannerPage({
         </div>
       }
     >
-      <ScannerContent slug={slug} userId={userId} />
+      <AuthenticatedScannerPage params={params} />
     </Suspense>
   );
+}
+
+async function AuthenticatedScannerPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const { userId } = await auth();
+  if (!userId) return null;
+
+  return <ScannerContent slug={slug} userId={userId} />;
 }
 
 async function ScannerContent({

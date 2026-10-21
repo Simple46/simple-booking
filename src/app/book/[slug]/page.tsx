@@ -1,11 +1,23 @@
 // src/app/book/[slug]/page.tsx
+import { Suspense } from "react";
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { format } from "date-fns";
 import { BookingForm } from "@/components/booking/booking-form";
 import { CalendarDays, MapPin, Users } from "lucide-react";
 
-export default async function PublicBookingPage({
+function BookingPageSkeleton() {
+  return (
+    <div className="min-h-screen bg-background flex items-center justify-center p-4 sm:p-8">
+      <div className="w-full max-w-4xl animate-pulse overflow-hidden rounded-3xl border border-border bg-surface md:grid md:grid-cols-[1.2fr_0.8fr]">
+        <div className="min-h-96 bg-surface-muted/50 p-8 sm:p-12" />
+        <div className="min-h-96 border-t border-border p-8 sm:p-12 md:border-l md:border-t-0" />
+      </div>
+    </div>
+  );
+}
+
+async function BookingPageContent({
   params,
 }: {
   params: Promise<{ slug: string }>;
@@ -129,5 +141,17 @@ export default async function PublicBookingPage({
         </div>
       </div>
     </div>
+  );
+}
+
+export default function PublicBookingPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  return (
+    <Suspense fallback={<BookingPageSkeleton />}>
+      <BookingPageContent params={params} />
+    </Suspense>
   );
 }
