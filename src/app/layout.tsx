@@ -1,6 +1,8 @@
+// app/layout.tsx
 import type { Metadata } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Provider } from "@/components/ui/provider";
+import { Toaster } from "sonner"; // Added for notifications
 import "./globals.css";
 
 import { Inter } from "next/font/google";
@@ -24,9 +26,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.variable} antialiased`}>
+      <body
+        className={`${inter.variable} bg-background text-foreground antialiased min-h-screen`}
+        suppressHydrationWarning
+      >
         <ClerkProvider>
-          <Provider>{children}</Provider>
+          <Provider>
+            {children}
+            <Toaster richColors position="top-center" />
+          </Provider>
         </ClerkProvider>
       </body>
     </html>
