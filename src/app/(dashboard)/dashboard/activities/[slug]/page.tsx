@@ -22,10 +22,6 @@ export default async function ActivityDetailPage({
 }: {
   params: Promise<{ slug: string }>;
 }) {
-  const { slug } = await params;
-  const { userId } = await auth();
-  if (!userId) return null;
-
   return (
     <Suspense
       fallback={
@@ -36,9 +32,21 @@ export default async function ActivityDetailPage({
         </div>
       }
     >
-      <ActivityDetailContent slug={slug} userId={userId} />
+      <AuthenticatedActivityDetailPage params={params} />
     </Suspense>
   );
+}
+
+async function AuthenticatedActivityDetailPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const { userId } = await auth();
+  if (!userId) return null;
+
+  return <ActivityDetailContent slug={slug} userId={userId} />;
 }
 
 async function ActivityDetailContent({

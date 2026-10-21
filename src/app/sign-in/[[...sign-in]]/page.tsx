@@ -1,5 +1,15 @@
+import { Suspense } from "react";
 import { SignIn } from "@clerk/nextjs";
 import Link from "next/link";
+
+function AuthWidgetFallback() {
+  return (
+    <div
+      aria-hidden="true"
+      className="h-[28rem] w-full animate-pulse rounded-2xl bg-surface-muted"
+    />
+  );
+}
 
 export default function SignInPage() {
   return (
@@ -16,7 +26,9 @@ export default function SignInPage() {
           simple<span className="text-amber-600">.</span>booking
         </Link>
         <div className="w-full rounded-3xl border border-border bg-surface p-2 shadow-2xl shadow-black/10 dark:shadow-black/30">
-          <SignIn />
+          <Suspense fallback={<AuthWidgetFallback />}>
+            <SignIn />
+          </Suspense>
         </div>
         <p className="text-center text-sm text-foreground/55">
           New to Simple Booking?{" "}
