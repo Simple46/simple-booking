@@ -1,0 +1,88 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum BookingMode {
+  CAPACITY
+  SLOTS
+}
+
+enum ActivityStatus {
+  DRAFT
+  PUBLISHED
+  CANCELLED
+}
+
+model User {
+  id        String     @id @default(cuid())
+  name      String
+  email     String     @unique
+  activities Activity[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model Activity {
+  id                  String         @id @default(cuid())
+  title               String
+  slug                String         @unique
+  description         String?        @db.Text
+  location            String?
+  startsAt            DateTime
+  endsAt              DateTime?
+  registrationDeadline DateTime?
+  capacity            Int?
+  bookingMode         BookingMode    @default(CAPACITY)
+  status              ActivityStatus @default(DRAFT)
+
+  organizerId String
+  organizer   User           @relation(fields: [organizerId], references: [id], onDelete: Cascade)
+  slots       Slot[]
+  registrations Registration[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([organizerId, status])
+}
+
+model Slot {
+  id         String   @id @default(cuid())
+  activityId String
+  activity   Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+
+  title     String?
+  startsAt  DateTime
+  endsAt    DateTime
+  capacity  Int      @default(1)
+  registrations Registration[]
+
+  createdAt DateTime @default(now())
+
+  @@index([activityId, startsAt])
+}
+
+model Registration {
+  id         String   @id @default(cuid())
+  activityId String
+  activity   Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+
+  slotId String?
+  slot   Slot? @relation(fields: [slotId], references: [id], onDelete: SetNull)
+
+  participantName  String
+  participantEmail String
+  participantPhone String?
+  qrToken          String   @unique @default(cuid())
+  checkedInAt      DateTime?
+
+  createdAt DateTime @default(now())
+
+  @@index([activityId, participantEmail])
+  @@index([slotId])
+}
