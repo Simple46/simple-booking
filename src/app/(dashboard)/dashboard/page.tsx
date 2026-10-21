@@ -67,7 +67,7 @@ async function DashboardContent({ userId }: { userId: string }) {
             <h2 className="text-lg font-semibold tracking-tight">
               Your activities
             </h2>
-            <Button variant="ghost" className="gap-2 text-xs">
+            <Button asChild variant="ghost" className="gap-2 text-xs flex">
               <Link href="/activities/new">
                 <Plus className="size-3.5" /> New
               </Link>
@@ -124,9 +124,10 @@ async function AuthenticatedDashboardPage() {
             Manage your activities and track registrations.
           </p>
         </div>
-        <Button className="gap-2">
-          <Link href="/activities/new">
-            <Plus className="size-4" /> Create Activity
+        <Button asChild>
+          <Link href="/activities/new" className="flex items-center gap-2">
+            <Plus className="size-4" />
+            <span>Create Activity</span>
           </Link>
         </Button>
       </div>

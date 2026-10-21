@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils"; // Utility to merge Tailwind classes
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: "primary" | "secondary" | "ghost" | "danger";
   isLoading?: boolean;
+  asChild?: boolean; // New prop to determine if the button should render as a child
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(

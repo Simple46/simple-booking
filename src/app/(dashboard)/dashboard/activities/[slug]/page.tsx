@@ -111,7 +111,7 @@ async function ActivityDetailContent({
             )}
           </div>
 
-          <Button className="gap-2 shrink-0">
+          <Button asChild className="gap-2 shrink-0">
             <Link href={`/dashboard/activities/${activity.slug}/scanner`}>
               <ScanLine className="size-4" /> Open Scanner
             </Link>
