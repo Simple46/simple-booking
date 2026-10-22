@@ -33,12 +33,21 @@ export function QrCode({ value, size = 200, className }: QrCodeProps) {
   }
 
   return (
-    <img
-      src={dataUrl}
-      alt="QR Code"
-      width={size}
-      height={size}
-      className={className}
-    />
+    <div className="relative group">
+      <img
+        src={dataUrl}
+        alt="QR Code"
+        width={size}
+        height={size}
+        className={className}
+      />
+      {/* Hidden download link triggered by parent */}
+      <a
+        id="qr-download-link"
+        href={dataUrl}
+        download="simple-booking-ticket.png"
+        className="hidden"
+      />
+    </div>
   );
 }

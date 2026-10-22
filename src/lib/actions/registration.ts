@@ -68,3 +68,16 @@ export async function registerAttendee(data: z.infer<typeof registerSchema>) {
     return { success: false, error: "An unexpected error occurred." };
   }
 }
+
+
+export async function getTicketStatus(qrToken: string) {
+  try {
+    const reg = await prisma.registration.findUnique({
+      where: { qrToken },
+      select: { checkedInAt: true },
+    });
+    return { checkedIn: !!reg?.checkedInAt };
+  } catch {
+    return { checkedIn: false };
+  }
+}

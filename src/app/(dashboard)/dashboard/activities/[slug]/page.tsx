@@ -16,6 +16,7 @@ import {
 import { SharePanel } from "@/components/dashboard/share-panel";
 import { RegistrationsTable } from "@/components/dashboard/registrations-table";
 import { Button } from "@/components/ui/button";
+import { DeleteActivityBtn } from "@/components/dashboard/delete-activity-btn";
 
 export default async function ActivityDetailPage({
   params,
@@ -110,12 +111,14 @@ async function ActivityDetailContent({
               </p>
             )}
           </div>
-
-          <Button asChild className="gap-2 shrink-0">
-            <Link href={`/dashboard/activities/${activity.slug}/scanner`}>
-              <ScanLine className="size-4" /> Open Scanner
-            </Link>
-          </Button>
+          <div className="flex gap-2">
+            <DeleteActivityBtn activityId={activity.id} />
+            <Button asChild className="gap-2 shrink-0">
+              <Link href={`/dashboard/activities/${activity.slug}/scanner`}>
+                <ScanLine className="size-4" /> Open Scanner
+              </Link>
+            </Button>
+          </div>
         </div>
       </div>
 

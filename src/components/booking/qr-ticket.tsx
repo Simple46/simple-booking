@@ -1,23 +1,60 @@
 // src/components/booking/qr-ticket.tsx
 "use client";
 
+import { useEffect, useState } from "react";
 import { QrCode } from "@/components/ui/qr-code";
 import { Button } from "@/components/ui/button";
-import { Printer, CheckCircle2 } from "lucide-react";
+import { Download, CheckCircle2, Clock } from "lucide-react";
+import { getTicketStatus } from "@/lib/actions/registration"; // We will create this
 
 export function QrTicket({ token, name }: { token: string; name: string }) {
+  const [isCheckedIn, setIsCheckedIn] = useState(false);
+
+  // Poll the server every 5 seconds to check if the organizer scanned it
+  useEffect(() => {
+    if (isCheckedIn) return;
+
+    const interval = setInterval(async () => {
+      const status = await getTicketStatus(token);
+      if (status.checkedIn) {
+        setIsCheckedIn(true);
+      }
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [token, isCheckedIn]);
+
+  const handleDownload = () => {
+    const link = document.getElementById(
+      "qr-download-link",
+    ) as HTMLAnchorElement;
+    if (link) link.click();
+  };
+
   return (
-    <div className="flex flex-col items-center justify-center p-6 sm:p-8 bg-surface border border-border rounded-3xl shadow-2xl w-full max-w-sm mx-auto animate-in zoom-in-95 duration-500">
-      <div className="flex size-12 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-500 mb-4">
-        <CheckCircle2 className="size-6" />
+    <div
+      className={`flex flex-col items-center justify-center p-6 sm:p-8 bg-surface border-2 rounded-3xl shadow-2xl w-full max-w-sm mx-auto animate-in zoom-in-95 duration-500 transition-colors ${isCheckedIn ? "border-emerald-500/50" : "border-border"}`}
+    >
+      <div
+        className={`flex size-12 items-center justify-center rounded-full mb-4 ${isCheckedIn ? "bg-emerald-500/10 text-emerald-500" : "bg-amber-500/10 text-amber-500"}`}
+      >
+        {isCheckedIn ? (
+          <CheckCircle2 className="size-6" />
+        ) : (
+          <Clock className="size-6" />
+        )}
       </div>
 
       <div className="text-center mb-6">
         <h2 className="text-2xl font-bold tracking-tight">
-          You&apos;re in, {name.split(" ")[0] || "Guest"}!
+          {isCheckedIn
+            ? "You're Checked In!"
+            : `You're in, ${name.split(" ")[0] || "Guest"}!`}
         </h2>
         <p className="text-sm text-foreground/60 mt-1">
-          Show this QR code at the entrance.
+          {isCheckedIn
+            ? "Have a great time at the event."
+            : "Show this QR code at the entrance."}
         </p>
       </div>
 
@@ -27,11 +64,11 @@ export function QrTicket({ token, name }: { token: string; name: string }) {
 
       <div className="flex gap-2 mt-8 w-full">
         <Button
-          onClick={() => window.print()}
+          onClick={handleDownload}
           variant="secondary"
           className="flex-1 gap-2"
         >
-          <Printer className="size-4" /> Save Ticket
+          <Download className="size-4" /> Download
         </Button>
       </div>
 

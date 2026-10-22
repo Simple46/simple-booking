@@ -16,17 +16,21 @@ export function DashboardSidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="hidden md:flex w-64 flex-col border-r border-border bg-surface h-screen sticky top-0">
-      <div className="h-18 flex items-center px-6 border-b border-border">
+    <div className="flex h-full flex-col">
+      {/* Logo */}
+      <div className="flex h-18 items-center border-b border-border px-6">
         <Link href="/" className="text-lg font-bold tracking-tight">
           simple<span className="text-amber-600">.</span>booking
         </Link>
       </div>
 
+      {/* Navigation */}
       <nav className="flex-1 space-y-2 p-4">
         {navItems.map((item) => {
           const isActive =
-            pathname === item.href || pathname.startsWith(`${item.href}/`);
+            pathname === item.href ||
+            (item.href !== "/dashboard" && pathname.startsWith(item.href));
+
           return (
             <Link
               key={item.name}
@@ -44,6 +48,6 @@ export function DashboardSidebar() {
           );
         })}
       </nav>
-    </aside>
+    </div>
   );
 }
